@@ -1,6 +1,16 @@
+const colorPeterRiver = '#3498db';
+
 const scale = 2;
 const cellRadius = 10;
 const cellPlaceSize = (cellRadius + 1) * 2;
+
+const padding = 32;
+const controlsHeight = 64;
+
+const playPauseButtonState = {
+  play: 'play_circle',
+  pause: 'pause_circle',
+};
 
 let numberOfColumns;
 let numberOfRows;
@@ -9,12 +19,40 @@ let field;
 let fieldCanvas;
 let fieldCanvasContext;
 
+const minInterval = 50;
+const maxInterval = 1000;
+let tickInterval = 500;
+let tickIntervalId;
+
+addEventListener('load', setUpListeners);
 addEventListener('load', setFieldSize);
 addEventListener('resize', setFieldSize);
 
+function setUpListeners() {
+  const playPauseButton = document.querySelector('#play-pause');
+  const tickIntervalSlider = document.querySelector('#tick-interval');
+
+  playPauseButton.addEventListener('click', () => {
+    if (tickIntervalId) {
+      clearInterval(tickIntervalId);
+      tickIntervalId = undefined;
+      playPauseButton.textContent = playPauseButtonState.play;
+    } else {
+      tickIntervalId = setInterval(gameTick, tickInterval);
+      playPauseButton.textContent = playPauseButtonState.pause;
+    }
+  });
+
+  tickIntervalSlider.addEventListener('input', (event) => {
+    clearInterval(tickIntervalId);
+    tickInterval = minInterval + maxInterval - event.target.value;
+    tickIntervalId = setInterval(gameTick, tickInterval);
+  });
+}
+
 function setFieldSize() {
-  const fieldWidth = Math.floor((window.innerWidth - 32 * 2) / cellPlaceSize) * cellPlaceSize;
-  const fieldHeight = Math.floor((window.innerHeight - 32 * 2) / cellPlaceSize) * cellPlaceSize;
+  const fieldWidth = Math.floor((window.innerWidth - padding * 2) / cellPlaceSize) * cellPlaceSize;
+  const fieldHeight = Math.floor((window.innerHeight - padding * 3 - controlsHeight) / cellPlaceSize) * cellPlaceSize;
 
   numberOfColumns = fieldWidth / cellPlaceSize;
   numberOfRows = fieldHeight / cellPlaceSize;
@@ -31,8 +69,6 @@ function setFieldSize() {
 
   generateRandomField();
   drawField();
-
-  setInterval(gameTick, 500);
 }
 
 function drawField() {
@@ -56,7 +92,7 @@ function drawCell(column, row) {
 
   fieldCanvasContext.moveTo(x, y);
   fieldCanvasContext.arc(x, y, cellRadius * scale, 0, 2 * Math.PI);
-  fieldCanvasContext.fillStyle = '#3498db';
+  fieldCanvasContext.fillStyle = colorPeterRiver;
 }
 
 function gameTick() {

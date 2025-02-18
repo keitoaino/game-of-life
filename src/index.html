@@ -7,9 +7,18 @@
   <title>Game of Life</title>
 
   <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
   <script src="index.js" defer></script>
 </head>
 <body>
-  <canvas id="field"></canvas>
+  <div class="field-wrapper">
+    <canvas id="field"></canvas>
+  </div>
+
+  <div class="controls">
+    <span id="play-pause" class="control material-symbols-outlined">play_circle</span>
+    <input id="tick-interval" class="control" type="range" min="50" max="1000" step="50" value="550" />
+  </div>
 </body>
 </html>
