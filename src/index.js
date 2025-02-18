@@ -4,9 +4,6 @@ const scale = 2;
 const cellRadius = 10;
 const cellPlaceSize = (cellRadius + 1) * 2;
 
-const padding = 32;
-const controlsHeight = 64;
-
 const playPauseButtonState = {
   play: 'play_circle',
   pause: 'pause_circle',
@@ -44,15 +41,18 @@ function setUpListeners() {
   });
 
   tickIntervalSlider.addEventListener('input', (event) => {
-    clearInterval(tickIntervalId);
     tickInterval = minInterval + maxInterval - event.target.value;
-    tickIntervalId = setInterval(gameTick, tickInterval);
+
+    if (tickIntervalId) {
+      clearInterval(tickIntervalId);
+      tickIntervalId = setInterval(gameTick, tickInterval);
+    }
   });
 }
 
 function setFieldSize() {
-  const fieldWidth = Math.floor((window.innerWidth - padding * 2) / cellPlaceSize) * cellPlaceSize;
-  const fieldHeight = Math.floor((window.innerHeight - padding * 3 - controlsHeight) / cellPlaceSize) * cellPlaceSize;
+  const fieldWidth = Math.floor(window.innerWidth / cellPlaceSize) * cellPlaceSize;
+  const fieldHeight = Math.floor(window.innerHeight / cellPlaceSize) * cellPlaceSize;
 
   numberOfColumns = fieldWidth / cellPlaceSize;
   numberOfRows = fieldHeight / cellPlaceSize;
